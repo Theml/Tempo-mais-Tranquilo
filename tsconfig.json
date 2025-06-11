@@ -1,0 +1,13 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": true,
+    "jsx": "react-native",
+    "baseUrl": ".",
+    "module": "ESNext",
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src", "App.tsx", "index.tsx"],
+  "exclude": ["node_modules"]
+}
