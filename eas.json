@@ -10,7 +10,8 @@
         "buildType": "apk"
       },
       "ios": {
-        "buildType": "development-client"
+        "development-client": true,
+        "buildType": "internal"
       }
     },
     "preview": {
@@ -21,7 +22,7 @@
         "buildType": "app-bundle"
       },
       "ios":{
-        "buildType": "release"
+        "buildType": "store"
       }
     }
   },
