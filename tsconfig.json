@@ -8,6 +8,6 @@
     "module": "ESNext",
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src", "App.tsx", "index.tsx"],
+  "include": ["src", "App.tsx", "index.tsx", "src/styles/styled.d.ts"],
   "exclude": ["node_modules"]
 }

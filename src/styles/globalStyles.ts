@@ -1,15 +1,22 @@
-import styled from 'styled-components/native';
+import styled, { ThemeProvider } from 'styled-components/native';
+import { theme } from './theme';
+
+// Tipos auxiliares para props extras
+type ButtonContainerProps = {
+  secondary?: boolean;
+  disabled?: boolean;
+};
 
 export const Container = styled.View`
   flex: 1;
   padding: 20px;
-  background-color: ${({ theme }) => theme.colors.background};
+  background-color: "#f8f9fa";
 `;
 
 export const Title = styled.Text`
   font-size: 24px;
   font-weight: bold;
-  color: ${({ theme }) => theme.colors.primary};
+  color: "#007bff";
   margin-bottom: 20px;
   text-align: center;
 `;
@@ -17,16 +24,15 @@ export const Title = styled.Text`
 export const Input = styled.TextInput`
   height: 50px;
   border-width: 1px;
-  border-color: ${({ theme }) => theme.colors.border};
+  border-color: "#dee2e6";
   border-radius: 8px;
   padding: 10px;
   margin-bottom: 15px;
   background-color: #fff;
 `;
 
-export const ButtonContainer = styled.TouchableOpacity`
-  background-color: ${({ theme, secondary }) => 
-    secondary ? theme.colors.secondary : theme.colors.primary};
+export const ButtonContainer = styled.TouchableOpacity<ButtonContainerProps>`
+  background-color: "#6c757d" || "#007bff";
   padding: 15px;
   border-radius: 8px;
   align-items: center;

@@ -4,7 +4,7 @@ import { ThemeProvider } from 'styled-components';
 import { AuthProvider } from './src/context/AuthContext';
 import { NavigationContainer } from '@react-navigation/native';
 import RootNavigation from './src/navigation/RootNavigation';
-import theme from './src/styles/theme';
+import { theme } from './src/styles/theme';
 
 export default function App() {
   return (
