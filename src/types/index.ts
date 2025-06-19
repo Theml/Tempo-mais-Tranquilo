@@ -23,7 +23,7 @@ export interface Family {
 
 export interface Need {
   id: string;
-  familyId: string;
+  familyId?: string;
   type: 'alimento' | 'vestuario' | 'medicamento' | 'outros';
   description: string;
   quantity: string;
@@ -33,11 +33,11 @@ export interface Need {
   status: 'pendente' | 'atendida' | 'cancelada';
 }
 
-// Definição correta dos tipos de navegação
+// Definição unificada dos tipos de navegação
 export type RootStackParamList = {
   Login: undefined;
   Cadastro: undefined;
-  Main: undefined; // Adicione esta linha para o HomeTabs
+  Main: undefined;
   Home: undefined;
   Perfil: undefined;
   EditPerfil: undefined;
@@ -45,7 +45,7 @@ export type RootStackParamList = {
   CadastroFamilia: undefined;
   FamiliaPerfil: { family: Family };
   EditFamiliaPerfil: { family: Family };
-  NecessidadeScreen: { familyId: string }; // Corrigido o nome da rota
+  NecessidadeScreen: { familyId: string }; // Parâmetro obrigatório
   AlterarSenha: undefined;
   RecuperarSenha: undefined;
 };

@@ -2,38 +2,30 @@ import React, { useState } from 'react';
 import { ScrollView, Alert } from 'react-native';
 import { PrimaryButton, FormInput, Container, FormSection, RadioButton, RadioGroup, RadioIcon, RadioText, SecondaryButton, SectionTitle, Title, UrgencyIndicator } from '../components/UI';
 
-import type { StackNavigationProp } from '@react-navigation/stack';
-import type { RouteProp } from '@react-navigation/native';
+import type { StackScreenProps } from '@react-navigation/stack';
+import type { RootStackParamList } from '../types';
 
-type RootStackParamList = {
-  NecessidadeScreen: { familyId?: number };
-  // Adicione outros parâmetros de rota conforme necessário
-};
+type Props = StackScreenProps<RootStackParamList, 'NecessidadeScreen'>;
 
-type NecessidadeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'NecessidadeScreen'>;
-type NecessidadeScreenRouteProp = RouteProp<RootStackParamList, 'NecessidadeScreen'>;
-
-interface NecessidadeScreenProps {
-  navigation: NecessidadeScreenNavigationProp;
-  route: NecessidadeScreenRouteProp;
-}
-
-const NecessidadeScreen: React.FC<NecessidadeScreenProps> = ({ navigation, route }) => {
+const NecessidadeScreen: React.FC<Props> = ({ navigation, route }) => {
   const [form, setForm] = useState({
-    tipo: 'alimento', // 'alimento', 'vestuario', 'medicamento', 'outros'
+    tipo: 'alimento' as 'alimento' | 'vestuario' | 'medicamento' | 'outros',
     descricao: '',
     quantidade: '',
-    urgencia: 'media', // 'baixa', 'media', 'alta'
+    urgencia: 'media' as 'baixa' | 'media' | 'alta',
     observacoes: '',
   });
 
-  const familyId = route.params?.familyId || 1;
+  // Agora o familyId é obrigatório nos parâmetros da rota
+  const familyId = route.params.familyId;
 
   const handleChange = (name: keyof typeof form, value: string) => {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = () => {
+    // Aqui você pode usar o familyId para salvar a necessidade
+    console.log('Salvando necessidade para família:', familyId);
     Alert.alert('Sucesso', 'Necessidade registrada com sucesso!');
     navigation.goBack();
   };
@@ -135,6 +127,7 @@ const NecessidadeScreen: React.FC<NecessidadeScreenProps> = ({ navigation, route
             onChangeText={(text) => handleChange('observacoes', text)}
           />
         </FormSection>
+        
         <PrimaryButton 
           title="Salvar Necessidade" 
           onPress={handleSubmit}

@@ -19,6 +19,7 @@ type InputProps = {
   icon?: IoniconName;
   keyboardType?: string;
   multiline?: boolean;
+  style?: object;
 };
 
 // Botão Primário
@@ -379,8 +380,8 @@ export const ChangePictureText = styled.Text`
 `;
 
 export const Description = styled.Text`
-    fontSize: 16,
-    color: '#333',
-    marginTop: 10,
-    textAlign: 'center',
+    fontSize: 16;
+    color: '#333';
+    marginTop: 10;
+    textAlign: 'center';
 `;

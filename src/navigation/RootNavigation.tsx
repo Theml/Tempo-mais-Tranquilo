@@ -12,8 +12,12 @@ import FamiliaPerfilScreen from '../screens/FamiliaPerfilScreen';
 import CadastroFamiliaScreen from '../screens/CadastroFamiliaScreen';
 import EditFamiliaPerfilScreen from '../screens/EditFamiliaPerfilScreen';
 import NecessidadeScreen from '../screens/NecessidadeScreen';
+import RecuperarSenhaScreen from '../screens/RecuperarSenhaScreen';
 
-const Stack = createStackNavigator();
+// Importar os tipos do arquivo index.ts
+import type { RootStackParamList, Family } from '../types';
+
+const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
 
 // Navegação das tabs (menu inferior)
@@ -126,7 +130,7 @@ export default function RootNavigation() {
         name="FamiliaPerfil" 
         component={FamiliaPerfilScreen} 
         options={({ route }) => ({ 
-          title: route.params?.family?.nome || 'Perfil da Família' 
+          title: route.params?.family?.name || 'Perfil da Família' // Usar 'name' ao invés de 'nome'
         })} 
       />
 
@@ -141,6 +145,12 @@ export default function RootNavigation() {
         name="NecessidadeScreen" 
         component={NecessidadeScreen} 
         options={{ title: 'Registrar Necessidade' }} 
+      />
+
+      <Stack.Screen
+      name="RecuperarSenha"
+      component={RecuperarSenhaScreen}
+      options={{ title: 'Recuperar Senha' }}
       />
     </Stack.Navigator>
   );

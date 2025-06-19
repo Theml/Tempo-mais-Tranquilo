@@ -21,7 +21,7 @@ const LoginScreen: React.FC<Props> = ({ navigation, route }) => {
       <Container>
         <ScrollContent>
           <Logo source={require('')} />
-          <Title>Bem-vindo ao SocialCare</Title>
+          <Title>Bem-vindo ao Tempo + Tranquilo</Title>
           
           <FormInput
             label="Email"
@@ -39,6 +39,7 @@ const LoginScreen: React.FC<Props> = ({ navigation, route }) => {
             onChangeText={setPassword}
             secureTextEntry
             icon="lock-closed"
+            style={{ color: '#000'}}
           />
           
           <PrimaryButton 
