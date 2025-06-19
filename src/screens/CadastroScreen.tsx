@@ -79,7 +79,6 @@ const CadastroScreen: React.FC<CadastroScreenProps> = ({ navigation }) => {
             onChangeText={(text) => handleChange('senha', text)}
             secureTextEntry
             icon="lock-closed"
-            style={{ color: '#000'}}
           />
           
           <FormInput
@@ -89,7 +88,6 @@ const CadastroScreen: React.FC<CadastroScreenProps> = ({ navigation }) => {
             onChangeText={(text) => handleChange('confirmarSenha', text)}
             secureTextEntry
             icon="lock-closed"
-            style={{ color: '#000'}}
           />
         </FormSection>
         

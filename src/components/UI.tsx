@@ -117,6 +117,7 @@ export const InputField = styled.View`
 export const TextInputStyled = styled.TextInput`
   flex: 1;
   height: 40px;
+  color: #000;
 `;
 
 export const CardContainer = styled.TouchableOpacity`

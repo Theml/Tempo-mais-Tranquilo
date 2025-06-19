@@ -16,6 +16,7 @@ import RecuperarSenhaScreen from '../screens/RecuperarSenhaScreen';
 
 // Importar os tipos do arquivo index.ts
 import type { RootStackParamList, Family } from '../types';
+import HomeScreen from 'src/screens/HomeScreen';
 
 const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
@@ -151,6 +152,12 @@ export default function RootNavigation() {
       name="RecuperarSenha"
       component={RecuperarSenhaScreen}
       options={{ title: 'Recuperar Senha' }}
+      />
+
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ title: 'Bem-vindo' }}
       />
     </Stack.Navigator>
   );
