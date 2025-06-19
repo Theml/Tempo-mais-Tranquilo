@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
-import { View, Image, TouchableOpacity } from 'react-native';
-import { PrimaryButton, FormInput, ScrollView } from '../components/UI';
+import { Alert, ScrollView  } from 'react-native';
+import { PrimaryButton, FormInput, ChangePictureButton, ChangePictureText, Container, FormSection, ProfilePicture, ProfilePictureContainer, SecondaryButton} from '../components/UI';
 import * as ImagePicker from 'expo-image-picker';
-import styled from 'styled-components/native';
 
-const EditPerfilScreen = ({ navigation }) => {
+import type { StackNavigationProp } from '@react-navigation/stack';
+
+type EditPerfilScreenProps = {
+  navigation: StackNavigationProp<any>;
+};
+
+const EditPerfilScreen: React.FC<EditPerfilScreenProps> = ({ navigation }) => {
   const [form, setForm] = useState({
     nome: 'Maria Oliveira',
     email: 'maria@exemplo.com',
@@ -14,8 +19,19 @@ const EditPerfilScreen = ({ navigation }) => {
     avatar: require(''),
   });
 
-  const handleChange = (name, value) => {
-    setForm(prev => ({ ...prev, [name]: value }));
+  interface FormState {
+    nome: string;
+    email: string;
+    telefone: string;
+    profissao: string;
+    organizacao: string;
+    avatar: any;
+  }
+
+  type FormField = keyof FormState;
+
+  const handleChange = (name: FormField, value: any) => {
+    setForm((prev: FormState) => ({ ...prev, [name]: value }));
   };
 
   const pickImage = async () => {
@@ -49,6 +65,7 @@ const EditPerfilScreen = ({ navigation }) => {
         <FormSection>
           <FormInput
             label="Nome Completo"
+            placeholder="Digite seu nome completo"
             value={form.nome}
             onChangeText={(text) => handleChange('nome', text)}
             icon="person"
@@ -56,15 +73,16 @@ const EditPerfilScreen = ({ navigation }) => {
           
           <FormInput
             label="Email"
+            placeholder="Digite seu email"
             value={form.email}
             onChangeText={(text) => handleChange('email', text)}
             icon="mail"
             keyboardType="email-address"
-            editable={false}
           />
           
           <FormInput
             label="Telefone"
+            placeholder="Digite seu telefone"
             value={form.telefone}
             onChangeText={(text) => handleChange('telefone', text)}
             icon="call"
@@ -75,6 +93,7 @@ const EditPerfilScreen = ({ navigation }) => {
         <FormSection>
           <FormInput
             label="Profissão"
+            placeholder="Digite sua profissão"
             value={form.profissao}
             onChangeText={(text) => handleChange('profissao', text)}
             icon="briefcase"
@@ -82,6 +101,7 @@ const EditPerfilScreen = ({ navigation }) => {
           
           <FormInput
             label="Organização"
+            placeholder="Digite sua organização"
             value={form.organizacao}
             onChangeText={(text) => handleChange('organizacao', text)}
             icon="business"
@@ -103,56 +123,5 @@ const EditPerfilScreen = ({ navigation }) => {
     </Container>
   );
 };
-
-const Container = styled.View`
-  flex: 1;
-  background-color: #f8f9fa;
-`;
-
-const ProfilePictureContainer = styled.View`
-  align-items: center;
-  margin-bottom: 20px;
-`;
-
-const ProfilePicture = styled.Image`
-  width: 120px;
-  height: 120px;
-  border-radius: 60px;
-  border-width: 3px;
-  border-color: #F87060;
-`;
-
-const ChangePictureButton = styled.TouchableOpacity`
-  margin-top: 10px;
-`;
-
-const ChangePictureText = styled.Text`
-  color: #F87060;
-  font-weight: 500;
-`;
-
-const FormSection = styled.View`
-  margin-bottom: 20px;
-  background-color: white;
-  border-radius: 10px;
-  padding: 15px;
-`;
-
-const SecondaryButton = styled.TouchableOpacity`
-  background-color: #6c757d;
-  padding: 15px;
-  border-radius: 8px;
-  align-items: center;
-  margin-top: 10px;
-  flex-direction: row;
-  justify-content: center;
-`;
-
-const SecondaryButtonText = styled.Text`
-  color: white;
-  font-weight: bold;
-  font-size: 16px;
-  margin-left: 10px;
-`;
 
 export default EditPerfilScreen;

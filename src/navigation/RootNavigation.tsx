@@ -22,16 +22,18 @@ const HomeTabs = () => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-          
+          let iconName: keyof typeof Ionicons.glyphMap;
+
           if (route.name === 'Início') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Famílias') {
             iconName = focused ? 'people' : 'people-outline';
           } else if (route.name === 'Perfil') {
             iconName = focused ? 'person' : 'person-outline';
+          } else {
+            iconName = 'ellipse'; // fallback to a valid icon
           }
-          
+
           return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: '#F87060',
@@ -88,10 +90,11 @@ export default function RootNavigation() {
     >
       {/* Telas de autenticação */}
       <Stack.Screen 
-        name="Login" 
-        component={LoginScreen} 
+        name="Login"
+        component={LoginScreen}
         options={{ headerShown: false }} 
       />
+
       <Stack.Screen 
         name="Cadastro" 
         component={CadastroScreen} 
@@ -118,6 +121,7 @@ export default function RootNavigation() {
         component={CadastroFamiliaScreen} 
         options={{ title: 'Cadastrar Família' }} 
       />
+
       <Stack.Screen 
         name="FamiliaPerfil" 
         component={FamiliaPerfilScreen} 
@@ -125,6 +129,7 @@ export default function RootNavigation() {
           title: route.params?.family?.nome || 'Perfil da Família' 
         })} 
       />
+
       <Stack.Screen 
         name="EditFamiliaPerfil" 
         component={EditFamiliaPerfilScreen} 

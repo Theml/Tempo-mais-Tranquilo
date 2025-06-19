@@ -1,9 +1,24 @@
 import React, { useState } from 'react';
 import { ScrollView, Alert } from 'react-native';
-import { PrimaryButton, FormInput } from '../components/UI';
-import styled from 'styled-components/native';
+import { PrimaryButton, FormInput, Container, FormSection, RadioButton, RadioGroup, RadioIcon, RadioText, SecondaryButton, SectionTitle, Title, UrgencyIndicator } from '../components/UI';
 
-const NecessidadeScreen = ({ navigation, route }) => {
+import type { StackNavigationProp } from '@react-navigation/stack';
+import type { RouteProp } from '@react-navigation/native';
+
+type RootStackParamList = {
+  NecessidadeScreen: { familyId?: number };
+  // Adicione outros parâmetros de rota conforme necessário
+};
+
+type NecessidadeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'NecessidadeScreen'>;
+type NecessidadeScreenRouteProp = RouteProp<RootStackParamList, 'NecessidadeScreen'>;
+
+interface NecessidadeScreenProps {
+  navigation: NecessidadeScreenNavigationProp;
+  route: NecessidadeScreenRouteProp;
+}
+
+const NecessidadeScreen: React.FC<NecessidadeScreenProps> = ({ navigation, route }) => {
   const [form, setForm] = useState({
     tipo: 'alimento', // 'alimento', 'vestuario', 'medicamento', 'outros'
     descricao: '',
@@ -14,7 +29,7 @@ const NecessidadeScreen = ({ navigation, route }) => {
 
   const familyId = route.params?.familyId || 1;
 
-  const handleChange = (name, value) => {
+  const handleChange = (name: keyof typeof form, value: string) => {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
@@ -73,8 +88,6 @@ const NecessidadeScreen = ({ navigation, route }) => {
             placeholder="Descreva a necessidade"
             value={form.descricao}
             onChangeText={(text) => handleChange('descricao', text)}
-            multiline
-            numberOfLines={4}
           />
           
           <FormInput
@@ -120,11 +133,8 @@ const NecessidadeScreen = ({ navigation, route }) => {
             placeholder="Informações adicionais"
             value={form.observacoes}
             onChangeText={(text) => handleChange('observacoes', text)}
-            multiline
-            numberOfLines={3}
           />
         </FormSection>
-        
         <PrimaryButton 
           title="Salvar Necessidade" 
           onPress={handleSubmit}
@@ -140,84 +150,5 @@ const NecessidadeScreen = ({ navigation, route }) => {
     </Container>
   );
 };
-
-const Container = styled.View`
-  flex: 1;
-  background-color: #f8f9fa;
-`;
-
-const Title = styled.Text`
-  font-size: 22px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 20px;
-  text-align: center;
-`;
-
-const FormSection = styled.View`
-  margin-bottom: 20px;
-  background-color: white;
-  border-radius: 10px;
-  padding: 15px;
-`;
-
-const SectionTitle = styled.Text`
-  font-size: 16px;
-  font-weight: bold;
-  color: #666;
-  margin-bottom: 15px;
-`;
-
-const RadioGroup = styled.View`
-  flex-direction: ${props => props.horizontal ? 'row' : 'column'};
-  flex-wrap: wrap;
-  margin-bottom: 10px;
-`;
-
-const RadioButton = styled.TouchableOpacity`
-  flex-direction: row;
-  align-items: center;
-  padding: ${props => props.small ? '8px 12px' : '12px'};
-  margin-bottom: 8px;
-  margin-right: ${props => props.horizontal ? '8px' : '0'};
-  border-radius: 8px;
-  background-color: ${props => props.selected ? '#F8706010' : '#f8f9fa'};
-  border: 1px solid ${props => props.selected ? '#F87060' : '#ddd'};
-`;
-
-const RadioIcon = styled(Ionicons)`
-  color: ${props => props.selected ? '#F87060' : '#666'};
-  margin-right: 8px;
-`;
-
-const RadioText = styled.Text`
-  color: ${props => props.selected ? '#F87060' : '#666'};
-`;
-
-const UrgencyIndicator = styled.View`
-  width: 16px;
-  height: 16px;
-  border-radius: 8px;
-  background-color: ${props => props.color};
-  margin-right: 10px;
-  border: 2px solid ${props => props.selected ? '#333' : 'transparent'};
-`;
-
-const SecondaryButton = styled.TouchableOpacity`
-  background-color: #6c757d;
-  padding: 15px;
-  border-radius: 8px;
-  align-items: center;
-  margin-top: 10px;
-  flex-direction: row;
-  justify-content: center;
-`;
-
-const SecondaryButtonText = styled.Text`
-  color: white;
-  font-weight: bold;
-  font-size: 16px;
-  margin-left: 10px;
-`;
 
 export default NecessidadeScreen;

@@ -1,7 +1,8 @@
 import React from 'react';
 import { ScrollView } from 'react-native';
-import { FamilyCard, PrimaryButton, Ionicons } from '../components/UI';
-import styled from 'styled-components/native';
+import { FamilyCard, Container, Header, Title, AddButton, FilterContainer, FilterButton, FilterText, SearchContainer, SearchInput } from '../components/UI';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { Ionicons } from '@expo/vector-icons';
 
 const mockFamilies = [
   {
@@ -27,7 +28,19 @@ const mockFamilies = [
   },
 ];
 
-const FamiliaListScreen = ({ navigation }) => {
+type RootStackParamList = {
+  CadastroFamilia: undefined;
+  FamiliaPerfil: { family: typeof mockFamilies[0] };
+  // Adicione outras rotas aqui se necessário
+};
+
+type FamiliaListScreenNavigationProp = StackNavigationProp<RootStackParamList, 'CadastroFamilia'>;
+
+interface Props {
+  navigation: FamiliaListScreenNavigationProp;
+}
+
+const FamiliaListScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <Container>
       <Header>
@@ -70,62 +83,5 @@ const FamiliaListScreen = ({ navigation }) => {
     </Container>
   );
 };
-
-const Container = styled.View`
-  flex: 1;
-  background-color: #f8f9fa;
-`;
-
-const Header = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  background-color: white;
-  border-bottom-width: 1px;
-  border-bottom-color: #eee;
-`;
-
-const Title = styled.Text`
-  font-size: 20px;
-  font-weight: bold;
-  color: #333;
-`;
-
-const AddButton = styled.TouchableOpacity`
-  padding: 5px;
-`;
-
-const FilterContainer = styled.View`
-  flex-direction: row;
-  margin-bottom: 15px;
-`;
-
-const FilterButton = styled.TouchableOpacity`
-  padding: 8px 15px;
-  border-radius: 15px;
-  background-color: ${props => props.active ? '#F8706020' : 'transparent'};
-  margin-right: 10px;
-  border: 1px solid ${props => props.active ? '#F87060' : '#ddd'};
-`;
-
-const FilterText = styled.Text`
-  color: ${props => props.active ? '#F87060' : '#666'};
-`;
-
-const SearchContainer = styled.View`
-  flex-direction: row;
-  align-items: center;
-  background-color: white;
-  border-radius: 8px;
-  padding: 10px 15px;
-  margin-bottom: 15px;
-  border: 1px solid #ddd;
-`;
-
-const SearchInput = styled.TextInput`
-  flex: 1;
-  height: 40px;
-`;
 
 export default FamiliaListScreen;

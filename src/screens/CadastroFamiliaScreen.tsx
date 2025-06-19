@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { ScrollView, Alert } from 'react-native';
-import { PrimaryButton, FormInput } from '../components/UI';
-import styled from 'styled-components/native';
+import { PrimaryButton, FormInput, Container, FormSection, SectionTitle, Title } from '../components/UI';
 
 const CadastroFamiliaScreen = () => {
   const [form, setForm] = useState({
@@ -13,7 +12,7 @@ const CadastroFamiliaScreen = () => {
     membros: '',
   });
 
-  const handleChange = (name, value) => {
+  const handleChange = (name: keyof typeof form, value: string) => {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
@@ -89,32 +88,5 @@ const CadastroFamiliaScreen = () => {
     </Container>
   );
 };
-
-const Container = styled.View`
-  flex: 1;
-  background-color: #f8f9fa;
-`;
-
-const Title = styled.Text`
-  font-size: 22px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 20px;
-  text-align: center;
-`;
-
-const FormSection = styled.View`
-  margin-bottom: 25px;
-  background-color: white;
-  border-radius: 10px;
-  padding: 15px;
-`;
-
-const SectionTitle = styled.Text`
-  font-size: 16px;
-  font-weight: bold;
-  color: #F87060;
-  margin-bottom: 15px;
-`;
 
 export default CadastroFamiliaScreen;

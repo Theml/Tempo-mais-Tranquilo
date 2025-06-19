@@ -1,9 +1,21 @@
 import React, { useState } from 'react';
 import { ScrollView, Alert } from 'react-native';
-import { PrimaryButton, FormInput } from '../components/UI';
-import styled from 'styled-components/native';
+import { PrimaryButton, FormInput, Container, FormSection, LoginLink, LoginLinkText, RadioButton, RadioGroup, RadioText, SectionTitle, Title } from '../components/UI';
 
-const CadastroScreen = ({ navigation }) => {
+import type { StackNavigationProp } from '@react-navigation/stack';
+
+type RootStackParamList = {
+  Login: undefined;
+  // Adicione outras rotas aqui se necessário
+};
+
+type CadastroScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
+
+interface CadastroScreenProps {
+  navigation: CadastroScreenNavigationProp;
+}
+
+const CadastroScreen: React.FC<CadastroScreenProps> = ({ navigation }) => {
   const [form, setForm] = useState({
     nome: '',
     email: '',
@@ -13,7 +25,7 @@ const CadastroScreen = ({ navigation }) => {
     tipoUsuario: 'voluntario', // ou 'assistente'
   });
 
-  const handleChange = (name, value) => {
+  const handleChange = (name: string, value: string) => {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
@@ -47,7 +59,6 @@ const CadastroScreen = ({ navigation }) => {
             onChangeText={(text) => handleChange('email', text)}
             icon="mail"
             keyboardType="email-address"
-            autoCapitalize="none"
           />
           
           <FormInput
@@ -112,61 +123,5 @@ const CadastroScreen = ({ navigation }) => {
     </Container>
   );
 };
-
-const Container = styled.View`
-  flex: 1;
-  background-color: #f8f9fa;
-`;
-
-const Title = styled.Text`
-  font-size: 24px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 20px;
-  text-align: center;
-`;
-
-const FormSection = styled.View`
-  margin-bottom: 20px;
-  background-color: white;
-  border-radius: 10px;
-  padding: 15px;
-`;
-
-const SectionTitle = styled.Text`
-  font-size: 16px;
-  font-weight: bold;
-  color: #666;
-  margin-bottom: 15px;
-`;
-
-const RadioGroup = styled.View`
-  margin-top: 10px;
-`;
-
-const RadioButton = styled.TouchableOpacity`
-  flex-direction: row;
-  align-items: center;
-  padding: 12px;
-  margin-bottom: 8px;
-  border-radius: 8px;
-  background-color: ${props => props.selected ? '#F8706033' : '#f8f9fa'};
-  border: 1px solid ${props => props.selected ? '#F87060' : '#ddd'};
-`;
-
-const RadioText = styled.Text`
-  margin-left: 10px;
-  color: #333;
-`;
-
-const LoginLink = styled.TouchableOpacity`
-  align-self: center;
-  margin-top: 20px;
-`;
-
-const LoginLinkText = styled.Text`
-  color: #F87060;
-  font-weight: 500;
-`;
 
 export default CadastroScreen

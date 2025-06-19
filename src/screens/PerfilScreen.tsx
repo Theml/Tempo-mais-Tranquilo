@@ -1,9 +1,24 @@
 import React from 'react';
-import { View, Image } from 'react-native';
-import { PrimaryButton, SecondaryButton, ScrollView } from '../components/UI';
-import styled from 'styled-components/native';
+import { ScrollView } from 'react-native';
+import { Avatar, Container, PrimaryButton, ProfileHeader, SecondaryButton, Section, SectionTitle, UserEmail, UserInfo, UserName, UserRole } from '../components/UI';
 
-const PerfilScreen = ({ navigation }) => {
+import { StackNavigationProp } from '@react-navigation/stack';
+
+type RootStackParamList = {
+  EditPerfil: undefined;
+  AlterarSenha: undefined;
+  Visitas: undefined;
+  FamiliasAcompanhadas: undefined;
+  Login: undefined;
+};
+
+type PerfilScreenNavigationProp = StackNavigationProp<RootStackParamList>;
+
+interface PerfilScreenProps {
+  navigation: PerfilScreenNavigationProp;
+}
+
+const PerfilScreen: React.FC<PerfilScreenProps> = ({ navigation }) => {
   const user = {
     name: 'João da Silva',
     email: 'joao@exemplo.com',
@@ -60,58 +75,5 @@ const PerfilScreen = ({ navigation }) => {
     </Container>
   );
 };
-
-const Container = styled.View`
-  flex: 1;
-  background-color: #f8f9fa;
-`;
-
-const ProfileHeader = styled.View`
-  align-items: center;
-  margin-bottom: 30px;
-`;
-
-const Avatar = styled.Image`
-  width: 120px;
-  height: 120px;
-  border-radius: 60px;
-  margin-bottom: 15px;
-  border-width: 3px;
-  border-color: #F87060;
-`;
-
-const UserInfo = styled.View`
-  align-items: center;
-`;
-
-const UserName = styled.Text`
-  font-size: 22px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 5px;
-`;
-
-const UserEmail = styled.Text`
-  font-size: 16px;
-  color: #666;
-  margin-bottom: 5px;
-`;
-
-const UserRole = styled.Text`
-  font-size: 14px;
-  color: #F87060;
-  font-weight: 500;
-`;
-
-const Section = styled.View`
-  margin-bottom: 25px;
-`;
-
-const SectionTitle = styled.Text`
-  font-size: 16px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 15px;
-`;
 
 export default PerfilScreen;
