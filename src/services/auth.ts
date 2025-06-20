@@ -1,30 +1,122 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
-const USER_KEY = 'APP_USER';
+export interface User {
+  uid: string;
+  email: string | null;
+  displayName?: string | null;
+  photoURL?: string | null;
+  [key: string]: any;
+}
 
-export const auth = {
+export const authService = {
   async signInWithEmailAndPassword(email: string, password: string) {
-    // Simulação: aceita qualquer email/senha
-    const user = { email };
-    await AsyncStorage.setItem(USER_KEY, JSON.stringify(user));
-    return { user };
+    try {
+      const userCredential = await auth().signInWithEmailAndPassword(email, password);
+      return { user: userCredential.user };
+    } catch (error: any) {
+      throw new Error(this.getAuthErrorMessage(error.code));
+    }
   },
-  async createUserWithEmailAndPassword(email: string, password: string) {
-    // Simulação: cria usuário local
-    const user = { email };
-    await AsyncStorage.setItem(USER_KEY, JSON.stringify(user));
-    return { user };
+
+  async createUserWithEmailAndPassword(email: string, password: string, additionalData?: any) {
+    try {
+      const userCredential = await auth().createUserWithEmailAndPassword(email, password);
+      const user = userCredential.user;
+
+      // Salvar dados adicionais no Firestore
+      if (additionalData) {
+        await firestore()
+          .collection('users')
+          .doc(user.uid)
+          .set({
+            email: user.email,
+            uid: user.uid,
+            createdAt: firestore.FieldValue.serverTimestamp(),
+            ...additionalData,
+          });
+      }
+
+      return { user };
+    } catch (error: any) {
+      throw new Error(this.getAuthErrorMessage(error.code));
+    }
   },
+
   async signOut() {
-    await AsyncStorage.removeItem(USER_KEY);
+    try {
+      await auth().signOut();
+    } catch (error: any) {
+      throw new Error('Erro ao fazer logout');
+    }
   },
-  async getCurrentUser() {
-    const userStr = await AsyncStorage.getItem(USER_KEY);
-    return userStr ? JSON.parse(userStr) : null;
+
+  getCurrentUser() {
+    return auth().currentUser;
   },
+
   onAuthStateChanged(callback: (user: any) => void) {
-    // Simulação: chama callback imediatamente e retorna unsubscribe mock
-    auth.getCurrentUser().then(callback);
-    return () => {};
+    return auth().onAuthStateChanged(callback);
+  },
+
+  // Função para traduzir códigos de erro do Firebase
+  getAuthErrorMessage(errorCode: string): string {
+    switch (errorCode) {
+      case 'auth/user-not-found':
+        return 'Usuário não encontrado';
+      case 'auth/wrong-password':
+        return 'Senha incorreta';
+      case 'auth/email-already-in-use':
+        return 'Este email já está em uso';
+      case 'auth/weak-password':
+        return 'A senha deve ter pelo menos 6 caracteres';
+      case 'auth/invalid-email':
+        return 'Email inválido';
+      case 'auth/user-disabled':
+        return 'Usuário desabilitado';
+      case 'auth/too-many-requests':
+        return 'Muitas tentativas. Tente novamente mais tarde';
+      case 'auth/network-request-failed':
+        return 'Erro de conexão. Verifique sua internet';
+      default:
+        return 'Email ou senha inválidos';
+    }
+  },
+
+  // Função para atualizar perfil do usuário
+  async updateProfile(displayName?: string, photoURL?: string) {
+    const user = auth().currentUser;
+    if (!user) throw new Error('Usuário não autenticado');
+
+    try {
+      await user.updateProfile({ displayName, photoURL });
+      
+      // Atualizar também no Firestore
+      await firestore()
+        .collection('users')
+        .doc(user.uid)
+        .update({
+          displayName,
+          photoURL,
+          updatedAt: firestore.FieldValue.serverTimestamp(),
+        });
+    } catch (error: any) {
+      throw new Error('Erro ao atualizar perfil');
+    }
+  },
+
+  // Função para obter dados adicionais do usuário do Firestore
+  async getUserData(uid: string) {
+    try {
+      const userDoc = await firestore()
+        .collection('users')
+        .doc(uid)
+        .get();
+
+      return userDoc.exists() ? userDoc.data() : null;
+    } catch (error: any) {
+      console.error('Erro ao buscar dados do usuário:', error);
+      return null;
+    }
   },
 };

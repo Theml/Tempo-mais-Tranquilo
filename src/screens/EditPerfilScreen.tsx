@@ -4,12 +4,13 @@ import { PrimaryButton, FormInput, ChangePictureButton, ChangePictureText, Conta
 import * as ImagePicker from 'expo-image-picker';
 
 import type { StackNavigationProp } from '@react-navigation/stack';
+import type { RootStackParamList } from '../types/index';
 
 type EditPerfilScreenProps = {
-  navigation: StackNavigationProp<any>;
+  navigation: StackNavigationProp<RootStackParamList, 'EditPerfil'>;
 };
 
-const EditPerfilScreen: React.FC<EditPerfilScreenProps> = ({ navigation }) => {
+export default function EditPerfilScreen({ navigation }: EditPerfilScreenProps) {
   const [form, setForm] = useState({
     nome: 'Maria Oliveira',
     email: 'maria@exemplo.com',
@@ -123,5 +124,3 @@ const EditPerfilScreen: React.FC<EditPerfilScreenProps> = ({ navigation }) => {
     </Container>
   );
 };
-
-export default EditPerfilScreen;

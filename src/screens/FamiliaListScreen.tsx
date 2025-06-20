@@ -1,38 +1,12 @@
 import React from 'react';
 import { ScrollView } from 'react-native';
 import { FamilyCard, Container, Header, Title, AddButton, FilterContainer, FilterButton, FilterText, SearchContainer, SearchInput } from '../components/UI';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
 
-const mockFamilies = [
-  {
-    id: 1,
-    name: 'Família Silva',
-    address: 'Rua das Flores, 123 - Centro',
-    needs: 'Alimentos, Roupas',
-    vulnerabilities: 'Desemprego'
-  },
-  {
-    id: 2,
-    name: 'Família Oliveira',
-    address: 'Av. Principal, 456 - Vila Nova',
-    needs: 'Remédios, Cobertores',
-    vulnerabilities: 'Doença crônica'
-  },
-  {
-    id: 3,
-    name: 'Família Souza',
-    address: 'Travessa Esperança, 789 - Jardim',
-    needs: 'Material escolar',
-    vulnerabilities: 'Mãe solo com 3 filhos'
-  },
-];
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../types/index';
 
-type RootStackParamList = {
-  CadastroFamilia: undefined;
-  FamiliaPerfil: { family: typeof mockFamilies[0] };
-  // Adicione outras rotas aqui se necessário
-};
+import { database } from '../services/database';
 
 type FamiliaListScreenNavigationProp = StackNavigationProp<RootStackParamList, 'CadastroFamilia'>;
 
@@ -40,7 +14,17 @@ interface Props {
   navigation: FamiliaListScreenNavigationProp;
 }
 
-const FamiliaListScreen: React.FC<Props> = ({ navigation }) => {
+export default function FamiliaListScreen({ navigation }: Props) {
+  const [familias, setFamilias] = React.useState<any[]>([]);
+
+  React.useEffect(() => {
+    const fetchFamilias = async () => {
+      const data = await database.getFamilias();
+      setFamilias(data);
+    };
+    fetchFamilias();
+  }, []);
+
   return (
     <Container>
       <Header>
@@ -69,8 +53,8 @@ const FamiliaListScreen: React.FC<Props> = ({ navigation }) => {
           <SearchInput placeholder="Buscar famílias..." />
         </SearchContainer>
         
-        {/* Lista de famílias */}
-        {mockFamilies.map(family => (
+        {/* Lista de famílias reais */}
+        {familias.map(family => (
           <FamilyCard
             key={family.id}
             name={family.name}
@@ -82,6 +66,4 @@ const FamiliaListScreen: React.FC<Props> = ({ navigation }) => {
       </ScrollView>
     </Container>
   );
-};
-
-export default FamiliaListScreen;
+}

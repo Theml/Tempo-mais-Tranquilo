@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform } from 'react-native';
 import { PrimaryButton, SecondaryButton, FormInput, Container, ForgotPassword, ForgotPasswordText, Logo, ScrollContent, Title } from '../components/UI';
 
+import { authService } from 'src/services/auth';
+
 import type { StackScreenProps } from '@react-navigation/stack';
 
 type RootStackParamList = {
   Login: undefined;
   Cadastro: undefined;
   RecuperarSenha: undefined;
-  Home: undefined;
+  Main: undefined;
 };
 
 type Props = StackScreenProps<RootStackParamList, 'Login'>;
@@ -16,6 +18,21 @@ type Props = StackScreenProps<RootStackParamList, 'Login'>;
 const LoginScreen: React.FC<Props> = ({ navigation, route }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const handleLogin = async () => { 
+    if (email === '' || password === '') {
+      alert('Por favor, preencha todos os campos.');
+      return;
+    } 
+    try{
+      await authService.signInWithEmailAndPassword(email, password);
+      navigation.replace('Main');
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
+      alert('Email ou senha inválidos. Tente novamente.');
+    }
+  }
+
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
@@ -45,16 +62,7 @@ const LoginScreen: React.FC<Props> = ({ navigation, route }) => {
             
             <PrimaryButton 
             title="Entrar" 
-            onPress={() => {
-              // Simulação de autenticação
-              const isAuthenticated = email === 'usuario@teste.com' && password === '123456';
-              if (isAuthenticated) {
-              navigation.navigate('Home');
-              } else {
-              // Aqui você pode exibir um alerta de erro
-              // Exemplo: Alert.alert('Erro', 'Email ou senha inválidos');
-              }
-            }} 
+            onPress={() => { handleLogin() }} 
             icon="log-in"
             />
             

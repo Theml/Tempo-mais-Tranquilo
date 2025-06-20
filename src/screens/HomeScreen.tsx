@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollView } from 'react-native';
 import { 
   Container, 
@@ -12,7 +12,41 @@ import {
 } from '../components/UI';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function HomeScreen(){
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../types/index';
+import { database } from '../services/database';
+
+type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
+
+interface Props {
+  navigation: HomeScreenNavigationProp;
+};
+
+export default function HomeScreen({ navigation }: Props) {
+  const [recentUpdates, setRecentUpdates] = useState<any[]>([]);
+  const [totalFamilias, setTotalFamilias] = useState<number>(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Buscar famílias
+        const familias = await database.getFamilias();
+        setTotalFamilias(familias.length);
+        // Buscar atualizações recentes (simulação, crie o método no database.ts)
+        if (database.getUpdates) {
+          const updates = await database.getUpdates();
+          setRecentUpdates(updates);
+        } else {
+          setRecentUpdates([]); // Se não houver método, lista vazia
+        }
+      } catch (error) {
+        setTotalFamilias(0);
+        setRecentUpdates([]);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <Container>
       <ScrollView contentContainerStyle={{ padding: 20 }}>
@@ -23,7 +57,7 @@ export default function HomeScreen(){
           <CardBody>
             <CardInfo>
               <Ionicons name="people" size={20} color="#F87060" /> 
-              Famílias cadastradas: 24
+              Famílias cadastradas: {totalFamilias}
             </CardInfo>
             <CardInfo>
               <Ionicons name="alert-circle" size={20} color="#F87060" /> 
@@ -35,7 +69,7 @@ export default function HomeScreen(){
         <SectionTitle>Ações Rápidas</SectionTitle>
         <PrimaryButton 
           title="Cadastrar Nova Família" 
-          onPress={() => console.log("Navegar para cadastro")}
+          onPress={() => navigation.navigate('CadastroFamilia')}
           icon="people"
         />
         
@@ -44,28 +78,26 @@ export default function HomeScreen(){
           onPress={() => console.log("Navegar para visitas")}
           icon="calendar"
         />
-        
-        <PrimaryButton 
-          title="Ver Necessidades Urgentes" 
-          onPress={() => console.log("Navegar para necessidades")}
-          icon="alert"
-        />
 
         <SectionTitle>Atualizações Recentes</SectionTitle>
-        <CardContainer>
-          <CardTitle>Família Silva</CardTitle>
-          <CardBody>
-            <CardInfo>Nova necessidade: Medicamentos</CardInfo>
-            <CardInfo>Urgência: Alta</CardInfo>
-          </CardBody>
-        </CardContainer>
-
-        <CardContainer>
-          <CardTitle>Família Oliveira</CardTitle>
-          <CardBody>
-            <CardInfo>Visita realizada: 20/06/2023</CardInfo>
-          </CardBody>
-        </CardContainer>
+        {recentUpdates.length === 0 && (
+          <CardContainer>
+            <CardBody>
+              <CardInfo>Nenhuma atualização recente.</CardInfo>
+            </CardBody>
+          </CardContainer>
+        )}
+        {recentUpdates.map(update => (
+          <CardContainer key={update.id}>
+            <CardTitle>{update.familyName}</CardTitle>
+            <CardBody>
+              <CardInfo>{update.description}</CardInfo>
+              <CardInfo>
+                {update.createdAt && new Date(update.createdAt).toLocaleString('pt-BR')}
+              </CardInfo>
+            </CardBody>
+          </CardContainer>
+        ))}
       </ScrollView>
     </Container>
   );

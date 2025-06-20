@@ -1,4 +1,4 @@
-import React from 'react';
+import React ,{ useState, useEffect } from 'react';
 import { ScrollView } from 'react-native';
 import { 
   Container, 
@@ -13,22 +13,34 @@ import {
 } from '../components/UI';
 import { Ionicons } from '@expo/vector-icons';
 
-const FamiliaPerfilScreen = () => {
-  const familyData = {
-    nome: 'Família Silva',
-    endereco: 'Rua das Flores, 123 - Centro, São Paulo/SP',
-    telefone: '(11) 98765-4321',
-    vulnerabilidades: 'Desemprego do chefe da família, criança com asma',
-    necessidades: 'Cesta básica, remédios para asma, material escolar',
-    membros: '4 pessoas (2 adultos, 2 crianças)',
-    ultimaVisita: '15/06/2023',
-    responsavel: 'Maria Oliveira (Assistente Social)'
-  };
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RouteProp } from '@react-navigation/native';
+import { RootStackParamList } from '../types/index';
+
+import { database } from '../services/database';
+
+type FamiliaPerfilScreenNavigationProp = StackNavigationProp<RootStackParamList, 'FamiliaPerfil'>;
+
+interface Props {
+  navigation: FamiliaPerfilScreenNavigationProp;
+  route: RouteProp<RootStackParamList, 'FamiliaPerfil'>;
+}
+
+export default function FamiliaPerfilScreen({ navigation, route }: Props) {
+  const [familyData, setFamilyData] = useState<any>(route.params?.family);
+
+  useEffect(() => {
+    if (familyData?.id) {
+      database.getFamiliaById(familyData.id).then(data => {
+        if (data) setFamilyData(data);
+      });
+    }
+  }, []);
 
   return (
     <Container>
       <ScrollView contentContainerStyle={{ padding: 20 }}>
-        <Title>{familyData.nome}</Title>
+        <Title>{familyData.name}</Title>
         <Description>Cadastrada em: 10/05/2023</Description>
         
         <SectionTitle>Informações Básicas</SectionTitle>
@@ -36,15 +48,15 @@ const FamiliaPerfilScreen = () => {
           <CardBody>
             <CardInfo>
               <Ionicons name="location" size={16} color="#F87060" /> 
-              {familyData.endereco}
+              {familyData.address}
             </CardInfo>
             <CardInfo>
               <Ionicons name="call" size={16} color="#F87060" /> 
-              {familyData.telefone}
+              {familyData.phone}
             </CardInfo>
             <CardInfo>
               <Ionicons name="people" size={16} color="#F87060" /> 
-              {familyData.membros}
+              {familyData.members}
             </CardInfo>
           </CardBody>
         </CardContainer>
@@ -53,14 +65,14 @@ const FamiliaPerfilScreen = () => {
         <CardContainer>
           <CardTitle>Vulnerabilidades</CardTitle>
           <CardBody>
-            <CardInfo>{familyData.vulnerabilidades}</CardInfo>
+            <CardInfo>{familyData.vulnerabilities}</CardInfo>
           </CardBody>
         </CardContainer>
 
         <CardContainer>
           <CardTitle>Necessidades Atuais</CardTitle>
           <CardBody>
-            <CardInfo>{familyData.necessidades}</CardInfo>
+            <CardInfo>{familyData.needs}</CardInfo>
           </CardBody>
         </CardContainer>
 
@@ -69,7 +81,7 @@ const FamiliaPerfilScreen = () => {
           <CardBody>
             <CardInfo>
               <Ionicons name="calendar" size={16} color="#F87060" /> 
-              Última visita: {familyData.ultimaVisita}
+              Última visita: {familyData.lastVisit ? familyData.lastVisit.toLocaleDateString() : 'Não informado'}
             </CardInfo>
             <CardInfo>
               <Ionicons name="person" size={16} color="#F87060" /> 
@@ -80,18 +92,16 @@ const FamiliaPerfilScreen = () => {
 
         <PrimaryButton 
           title="Editar Perfil" 
-          onPress={() => console.log("Editar")}
+          onPress={() => navigation.navigate('EditFamiliaPerfil', { family: familyData})}
           icon="create"
         />
         
         <PrimaryButton 
           title="Registrar Nova Necessidade" 
-          onPress={() => console.log("Nova necessidade")}
+          onPress={() => navigation.navigate('Necessidade', { familyId: familyData.id })}
           icon="add-circle"
         />
       </ScrollView>
     </Container>
   );
 };
-
-export default FamiliaPerfilScreen;

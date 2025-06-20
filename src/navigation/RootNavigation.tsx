@@ -29,7 +29,7 @@ const HomeTabs = () => {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName: keyof typeof Ionicons.glyphMap;
 
-          if (route.name === 'Início') {
+          if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Famílias') {
             iconName = focused ? 'people' : 'people-outline';
@@ -61,9 +61,9 @@ const HomeTabs = () => {
       })}
     >
       <Tab.Screen 
-        name="Início" 
-        component={FamiliaListScreen} 
-        options={{ title: 'Início' }}
+        name="Home" 
+        component={HomeScreen} 
+        options={{ title: 'Home' }}
       />
       <Tab.Screen 
         name="Famílias" 
@@ -75,6 +75,7 @@ const HomeTabs = () => {
         component={PerfilScreen} 
         options={{ title: 'Meu Perfil' }}
       />
+
     </Tab.Navigator>
   );
 };
@@ -131,7 +132,7 @@ export default function RootNavigation() {
         name="FamiliaPerfil" 
         component={FamiliaPerfilScreen} 
         options={({ route }) => ({ 
-          title: route.params?.family?.name || 'Perfil da Família' // Usar 'name' ao invés de 'nome'
+          title: route.params?.family?.name || 'Perfil da Família'
         })} 
       />
 
@@ -143,7 +144,7 @@ export default function RootNavigation() {
       
       {/* Telas de necessidades */}
       <Stack.Screen 
-        name="NecessidadeScreen" 
+        name="Necessidade" 
         component={NecessidadeScreen} 
         options={{ title: 'Registrar Necessidade' }} 
       />
@@ -152,12 +153,6 @@ export default function RootNavigation() {
       name="RecuperarSenha"
       component={RecuperarSenhaScreen}
       options={{ title: 'Recuperar Senha' }}
-      />
-
-      <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ title: 'Bem-vindo' }}
       />
     </Stack.Navigator>
   );

@@ -9,6 +9,12 @@ export interface User {
   avatar?: string;
 }
 
+type Member = {
+  name: string;
+  age: string;
+  relationship: string;
+}
+
 export interface Family {
   id: string;
   name: string;
@@ -16,7 +22,9 @@ export interface Family {
   phone: string;
   vulnerabilities: string;
   needs: string;
-  members: number;
+  members: Member[];
+  responsavel: string;
+  lastVisit?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -45,9 +53,11 @@ export type RootStackParamList = {
   CadastroFamilia: undefined;
   FamiliaPerfil: { family: Family };
   EditFamiliaPerfil: { family: Family };
-  NecessidadeScreen: { familyId: string }; // Parâmetro obrigatório
+  Necessidade: { familyId: string }; // familyId é obrigatório
   AlterarSenha: undefined;
   RecuperarSenha: undefined;
+  Visitas: undefined;
+  FamiliasAcompanhadas: undefined;
 };
 
 // Definição dos tipos para as tabs

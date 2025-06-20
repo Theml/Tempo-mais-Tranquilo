@@ -2,20 +2,18 @@ import React, { useState } from 'react';
 import { ScrollView, Alert } from 'react-native';
 import { PrimaryButton, FormInput, Container, FormSection, LoginLink, LoginLinkText, RadioButton, RadioGroup, RadioText, SectionTitle, Title } from '../components/UI';
 
+import { authService } from 'src/services/auth';
+
 import type { StackNavigationProp } from '@react-navigation/stack';
+import type { RootStackParamList } from '../types/index';
 
-type RootStackParamList = {
-  Login: undefined;
-  // Adicione outras rotas aqui se necessário
-};
-
-type CadastroScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
+type CadastroScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Cadastro'>;
 
 interface CadastroScreenProps {
   navigation: CadastroScreenNavigationProp;
 }
 
-const CadastroScreen: React.FC<CadastroScreenProps> = ({ navigation }) => {
+export default function CadastroScreen({ navigation }: CadastroScreenProps) {
   const [form, setForm] = useState({
     nome: '',
     email: '',
@@ -29,15 +27,27 @@ const CadastroScreen: React.FC<CadastroScreenProps> = ({ navigation }) => {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = () => {
-    if (form.senha !== form.confirmarSenha) {
-      Alert.alert('Erro', 'As senhas não coincidem');
-      return;
+  const handleSubmit = async () => {
+  if (form.senha !== form.confirmarSenha) {
+    Alert.alert('Erro', 'As senhas não coincidem');
+    return;
+  }
+  try {
+    await authService.createUserWithEmailAndPassword(
+      form.email,
+      form.senha,
+      {
+        nome: form.nome,
+        telefone: form.telefone,
+        tipo: form.tipoUsuario,
+      }
+    );
+      Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
+      navigation.navigate('Login');
+    } catch (error: any) {
+      Alert.alert('Erro', error.message || String(error));
     }
-    Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
-    navigation.navigate('Login');
   };
-
   return (
     <Container>
       <ScrollView contentContainerStyle={{ padding: 20 }}>
@@ -123,5 +133,3 @@ const CadastroScreen: React.FC<CadastroScreenProps> = ({ navigation }) => {
     </Container>
   );
 };
-
-export default CadastroScreen

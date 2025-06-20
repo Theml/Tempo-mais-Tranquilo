@@ -5,9 +5,11 @@ import { PrimaryButton, FormInput, Container, FormSection, RadioButton, RadioGro
 import type { StackScreenProps } from '@react-navigation/stack';
 import type { RootStackParamList } from '../types';
 
-type Props = StackScreenProps<RootStackParamList, 'NecessidadeScreen'>;
+import { database } from 'src/services/database';
 
-const NecessidadeScreen: React.FC<Props> = ({ navigation, route }) => {
+type Props = StackScreenProps<RootStackParamList, 'Necessidade'>;
+
+export default function NecessidadeScreen({ navigation, route }: Props) {
   const [form, setForm] = useState({
     tipo: 'alimento' as 'alimento' | 'vestuario' | 'medicamento' | 'outros',
     descricao: '',
@@ -17,15 +19,18 @@ const NecessidadeScreen: React.FC<Props> = ({ navigation, route }) => {
   });
 
   // Agora o familyId é obrigatório nos parâmetros da rota
-  const familyId = route.params.familyId;
+  const { familyId } = route.params;
 
   const handleChange = (name: keyof typeof form, value: string) => {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = () => {
-    // Aqui você pode usar o familyId para salvar a necessidade
-    console.log('Salvando necessidade para família:', familyId);
+  const handleSubmit = async () => {
+   await database.addNecessidade({
+    ...form,
+    familyId,
+    createdAt: new Date(),
+  });
     Alert.alert('Sucesso', 'Necessidade registrada com sucesso!');
     navigation.goBack();
   };
@@ -143,5 +148,3 @@ const NecessidadeScreen: React.FC<Props> = ({ navigation, route }) => {
     </Container>
   );
 };
-
-export default NecessidadeScreen;

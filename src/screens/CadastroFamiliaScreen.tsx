@@ -2,7 +2,18 @@ import React, { useState } from 'react';
 import { ScrollView, Alert } from 'react-native';
 import { PrimaryButton, FormInput, Container, FormSection, SectionTitle, Title } from '../components/UI';
 
-const CadastroFamiliaScreen = () => {
+import type { StackNavigationProp } from '@react-navigation/stack';
+import type { RootStackParamList } from '../types/index';
+import { database } from 'src/services/database';
+import { authService } from 'src/services/auth';
+
+type CadastroFamiliaNavigationProps = StackNavigationProp<RootStackParamList, 'CadastroFamilia'>;
+
+interface CadastroFamiliaScreenProps {
+  navigation: CadastroFamiliaNavigationProps;
+}
+
+export default function CadastroFamiliaScreen({ navigation }:CadastroFamiliaScreenProps ) {
   const [form, setForm] = useState({
     nome: '',
     endereco: '',
@@ -15,6 +26,20 @@ const CadastroFamiliaScreen = () => {
   const handleChange = (name: keyof typeof form, value: string) => {
     setForm(prev => ({ ...prev, [name]: value }));
   };
+
+  const handleSubmit = async () => {
+     if (!form.nome || !form.endereco || !form.telefone) {
+    Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios.');
+    return;
+    }
+    const user = authService.getCurrentUser();
+    await database.addFamilia({
+      ...form,
+      createdBy: user ? user.uid : null,
+    });
+    Alert.alert('Sucesso', 'Família cadastrada com sucesso!');
+    navigation.goBack();
+  }
 
   return (
     <Container>
@@ -81,12 +106,10 @@ const CadastroFamiliaScreen = () => {
         
         <PrimaryButton 
           title="Cadastrar Família" 
-          onPress={() => Alert.alert('Cadastro', 'Família cadastrada com sucesso!')}
+          onPress={() => handleSubmit()}
           icon="save"
         />
       </ScrollView>
     </Container>
   );
 };
-
-export default CadastroFamiliaScreen;

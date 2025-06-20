@@ -1,16 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
 import { Avatar, Container, PrimaryButton, ProfileHeader, SecondaryButton, Section, SectionTitle, UserEmail, UserInfo, UserName, UserRole } from '../components/UI';
 
 import { StackNavigationProp } from '@react-navigation/stack';
-
-type RootStackParamList = {
-  EditPerfil: undefined;
-  AlterarSenha: undefined;
-  Visitas: undefined;
-  FamiliasAcompanhadas: undefined;
-  Login: undefined;
-};
+import { RootStackParamList } from '../types/index';
+import { authService } from 'src/services/auth';
 
 type PerfilScreenNavigationProp = StackNavigationProp<RootStackParamList>;
 
@@ -18,13 +12,15 @@ interface PerfilScreenProps {
   navigation: PerfilScreenNavigationProp;
 }
 
-const PerfilScreen: React.FC<PerfilScreenProps> = ({ navigation }) => {
-  const user = {
-    name: 'João da Silva',
-    email: 'joao@exemplo.com',
-    role: 'Assistente Social',
-    avatar: require('')
-  };
+export default function PerfilScreen ({ navigation }: PerfilScreenProps) {
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const currentUser = authService.getCurrentUser();
+    if (currentUser) {
+      authService.getUserData(currentUser.uid).then(setUser);
+    }
+  }, []);
 
   return (
     <Container>
@@ -75,5 +71,3 @@ const PerfilScreen: React.FC<PerfilScreenProps> = ({ navigation }) => {
     </Container>
   );
 };
-
-export default PerfilScreen;
