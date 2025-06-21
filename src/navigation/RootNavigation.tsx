@@ -66,7 +66,7 @@ const HomeTabs = () => {
         options={{ title: 'Home' }}
       />
       <Tab.Screen 
-        name="Famílias" 
+        name="FamiliaList" 
         component={FamiliaListScreen} 
         options={{ title: 'Famílias Cadastradas' }}
       />

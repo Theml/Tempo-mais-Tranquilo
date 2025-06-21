@@ -1,18 +1,19 @@
 export interface User {
   id: string;
   name: string;
+  senha: string;
   email: string;
   phone: string;
-  role: 'voluntario' | 'assistente';
+  role: string;
   profession?: string;
   organization?: string;
   avatar?: string;
 }
 
-type Member = {
-  name: string;
-  age: string;
-  relationship: string;
+export interface Member {
+  nome: string;
+  idade: string;
+  parentesco: string;
 }
 
 export interface Family {

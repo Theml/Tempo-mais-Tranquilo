@@ -12,7 +12,7 @@ type ButtonProps = {
 
 type InputProps = {
   label?: string;
-  placeholder: string;
+  placeholder?: string;
   value: string;
   onChangeText: (text: string) => void;
   secureTextEntry?: boolean;
@@ -213,6 +213,7 @@ export const SearchContainer = styled.View`
 export const SearchInput = styled.TextInput`
   flex: 1;
   height: 40px;
+  color: #000;
 `;
 
 export const ProfileHeader = styled.View`

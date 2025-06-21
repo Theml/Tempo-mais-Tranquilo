@@ -24,12 +24,13 @@ const LoginScreen: React.FC<Props> = ({ navigation, route }) => {
       alert('Por favor, preencha todos os campos.');
       return;
     } 
-    try{
-      await authService.signInWithEmailAndPassword(email, password);
+    try {
+      // Corrigido para usar login com email e senha via AsyncStorage
+      await authService.loginWithEmailAndPassword(email, password);
       navigation.replace('Main');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro ao fazer login:', error);
-      alert('Email ou senha inválidos. Tente novamente.');
+      alert(error.message || 'Email ou senha inválidos. Tente novamente.');
     }
   }
 

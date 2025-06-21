@@ -20,7 +20,7 @@ export default function CadastroScreen({ navigation }: CadastroScreenProps) {
     telefone: '',
     senha: '',
     confirmarSenha: '',
-    tipoUsuario: 'voluntario', // ou 'assistente'
+    role: '',
   });
 
   const handleChange = (name: string, value: string) => {
@@ -28,26 +28,25 @@ export default function CadastroScreen({ navigation }: CadastroScreenProps) {
   };
 
   const handleSubmit = async () => {
-  if (form.senha !== form.confirmarSenha) {
-    Alert.alert('Erro', 'As senhas não coincidem');
-    return;
-  }
-  try {
-    await authService.createUserWithEmailAndPassword(
-      form.email,
-      form.senha,
-      {
-        nome: form.nome,
-        telefone: form.telefone,
-        tipo: form.tipoUsuario,
-      }
-    );
+    if (form.senha !== form.confirmarSenha) {
+      Alert.alert('Erro', 'As senhas não coincidem');
+      return;
+    }
+    try {
+      await authService.register({
+        name: form.nome,
+        email: form.email,
+        phone: form.telefone,
+        senha: form.senha,
+        role: form.role,
+      });
       Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
       navigation.navigate('Login');
     } catch (error: any) {
       Alert.alert('Erro', error.message || String(error));
     }
   };
+
   return (
     <Container>
       <ScrollView contentContainerStyle={{ padding: 20 }}>
@@ -105,15 +104,15 @@ export default function CadastroScreen({ navigation }: CadastroScreenProps) {
           <SectionTitle>Tipo de Conta</SectionTitle>
           <RadioGroup>
             <RadioButton
-              selected={form.tipoUsuario === 'voluntario'}
-              onPress={() => handleChange('tipoUsuario', 'voluntario')}
+              selected={form.role === 'voluntario'}
+              onPress={() => handleChange('role', 'voluntario')}
             >
               <RadioText>Sou Voluntário</RadioText>
             </RadioButton>
             
             <RadioButton
-              selected={form.tipoUsuario === 'assistente'}
-              onPress={() => handleChange('tipoUsuario', 'assistente')}
+              selected={form.role === 'assistente'}
+              onPress={() => handleChange('role', 'assistente')}
             >
               <RadioText>Sou Assistente Social</RadioText>
             </RadioButton>

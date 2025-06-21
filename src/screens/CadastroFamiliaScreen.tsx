@@ -26,16 +26,13 @@ export default function CadastroFamiliaScreen({ navigation }:CadastroFamiliaScre
   const handleChange = (name: keyof typeof form, value: string) => {
     setForm(prev => ({ ...prev, [name]: value }));
   };
-
   const handleSubmit = async () => {
-     if (!form.nome || !form.endereco || !form.telefone) {
-    Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios.');
-    return;
+    if (!form.nome || !form.endereco || !form.telefone) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios.');
+      return;
     }
-    const user = authService.getCurrentUser();
     await database.addFamilia({
-      ...form,
-      createdBy: user ? user.uid : null,
+      ...form
     });
     Alert.alert('Sucesso', 'Família cadastrada com sucesso!');
     navigation.goBack();
