@@ -13,8 +13,8 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../types/index';
-import { database, Familia } from '../services/database';
+import { RootStackParamList, Family } from '../types/index';
+import { database } from '../services/database';
 import { useAuth } from '../context/AuthContext';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
@@ -163,7 +163,6 @@ export default function HomeScreen({ navigation }: Props) {
         ) : (
           recentUpdates.map(update => (
             <CardContainer key={update.id}>
-              <CardTitle>{update.familyName}</CardTitle>
               <CardBody>
                 <CardInfo>{update.description}</CardInfo>
                 <CardInfo>

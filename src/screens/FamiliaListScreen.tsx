@@ -4,9 +4,9 @@ import { FamilyCard, Container, Header, Title, AddButton, FilterContainer, Filte
 import { Ionicons } from '@expo/vector-icons';
 
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../types/index';
+import { RootStackParamList, Family } from '../types/index';
 
-import { database, Familia } from '../services/database';
+import { database } from '../services/database';
 import { useAuth } from '../context/AuthContext';
 
 type FamiliaListScreenNavigationProp = StackNavigationProp<RootStackParamList, 'FamiliaList'>;
@@ -16,8 +16,8 @@ interface Props {
 }
 
 export default function FamiliaListScreen({ navigation }: Props) {
-  const [familias, setFamilias] = useState<Familia[]>([]);
-  const [filteredFamilias, setFilteredFamilias] = useState<Familia[]>([]);
+  const [familias, setFamilias] = useState<Family[]>([]);
+  const [filteredFamilias, setFilteredFamilias] = useState<Family[]>([]);
   const [searchText, setSearchText] = useState('');
   const [activeFilter, setActiveFilter] = useState<'todas' | 'prioritarias' | 'minhas'>('todas');
   const [loading, setLoading] = useState(true);
@@ -95,16 +95,16 @@ export default function FamiliaListScreen({ navigation }: Props) {
     return unsubscribe;
   }, [navigation]);
 
-  const handleFamilyPress = (family: Familia) => {
+  const handleFamilyPress = (family: Family) => {
     // Converter para o formato esperado pela tela de perfil
     const familyForProfile = {
       id: family.id,
-      name: family.nome,
-      address: family.endereco || '',
-      phone: family.telefone || '',
-      vulnerabilities: family.vulnerabilidades || '',
-      needs: family.necessidades || '',
-      members: family.membros || [],
+      nome: family.nome,
+      endereco: family.endereco || '',
+      telefone: family.telefone || '',
+      vulnerabilidades: family.vulnerabilidades || '',
+      necessidades: family.necessidades || '',
+      membros: family.membros || [],
       responsavel: family.responsavel || '',
       lastVisit: family.lastVisit,
       createdAt: family.createdAt,

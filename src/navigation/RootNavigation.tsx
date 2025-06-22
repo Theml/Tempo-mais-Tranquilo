@@ -31,7 +31,7 @@ const HomeTabs = () => {
 
           if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'Famílias') {
+          } else if (route.name === 'FamiliaList') {
             iconName = focused ? 'people' : 'people-outline';
           } else if (route.name === 'Perfil') {
             iconName = focused ? 'person' : 'person-outline';
@@ -132,7 +132,7 @@ export default function RootNavigation() {
         name="FamiliaPerfil" 
         component={FamiliaPerfilScreen} 
         options={({ route }) => ({ 
-          title: route.params?.family?.name || 'Perfil da Família'
+          title: route.params?.family?.nome || 'Perfil da Família'
         })} 
       />
 

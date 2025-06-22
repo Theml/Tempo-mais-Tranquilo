@@ -10,7 +10,7 @@ export interface User {
   avatar?: string;
 }
 
-export interface Member {
+export interface Membro {
   nome: string;
   idade: string;
   parentesco: string;
@@ -18,16 +18,17 @@ export interface Member {
 
 export interface Family {
   id: string;
-  name: string;
-  address: string;
-  phone: string;
-  vulnerabilities: string;
-  needs: string;
-  members: Member[];
+  nome: string;
+  endereco: string;
+  telefone: string;
+  vulnerabilidades: string;
+  necessidades: string;
+  membros: Membro[];
   responsavel: string;
-  lastVisit?: Date;
-  createdAt: Date;
-  updatedAt: Date;
+  lastVisit?: Date | any;
+  createdAt: Date | any;
+  updatedAt: Date | any;
+  createdBy?: string;
 }
 
 export interface Need {

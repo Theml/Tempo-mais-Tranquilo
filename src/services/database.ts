@@ -15,18 +15,9 @@ import {
   limit,
   onSnapshot
 } from 'firebase/firestore';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { User } from '../types';
 
-export interface Familia {
-  id: string;
-  nome: string;
-  membros?: { nome: string; idade: string; parentesco: string }[];
-  createdAt?: any;
-  updatedAt?: any;
-  createdBy?: string;
-  [key: string]: any;
-}
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { User, Family } from '../types';
 
 const getCurrentUserId = async (): Promise<string> => {
   const stored = await AsyncStorage.getItem('@tempo:user');
@@ -100,7 +91,7 @@ export const database = {
   },
 
   // ==================== FAMILIAS ====================
-  async addFamilia(familiaData: Omit<Familia, 'id' | 'createdAt' | 'updatedAt' | 'createdBy'>) {
+  async addFamilia(familiaData: Omit<Family, 'id' | 'createdAt' | 'updatedAt' | 'createdBy'>) {
     const userId = await getCurrentUserId();
     const docRef = await addDoc(collection(db, 'familias'), {
       ...familiaData,
@@ -109,15 +100,15 @@ export const database = {
       updatedAt: serverTimestamp(),
     });
     const familiaDoc = await getDoc(docRef);
-    return { id: docRef.id, ...familiaDoc.data() } as Familia;
+    return { id: docRef.id, ...familiaDoc.data() } as Family;
   },
 
-  async updateFamilia(familiaId: string, familiaData: Partial<Familia>) {
+  async updateFamilia(familiaId: string, familiaData: Partial<Family>) {
     const userId = await getCurrentUserId();
     const familiaRef = doc(db, 'familias', familiaId);
     const familiaDoc = await getDoc(familiaRef);
     if (!familiaDoc.exists()) throw new Error('Família não encontrada');
-    const familiaExistente = familiaDoc.data() as Familia;
+    const familiaExistente = familiaDoc.data() as Family;
     if (familiaExistente.createdBy !== userId) {
       throw new Error('Sem permissão para atualizar esta família');
     }
@@ -126,10 +117,10 @@ export const database = {
       updatedAt: serverTimestamp(),
     });
     const updatedDoc = await getDoc(familiaRef);
-    return { id: familiaId, ...updatedDoc.data() } as Familia;
+    return { id: familiaId, ...updatedDoc.data() } as Family;
   },
 
-  async getFamilias(): Promise<Familia[]> {
+  async getFamilias(): Promise<Family[]> {
     try {
       const userId = await getCurrentUserId();
       console.log('Buscando famílias para usuário:', userId);
@@ -146,7 +137,7 @@ export const database = {
       const familias = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
-      })) as Familia[];
+      })) as Family[];
 
       // Ordenar no cliente após buscar os dados
       const familiasOrdenadas = familias.sort((a, b) => {
@@ -164,7 +155,7 @@ export const database = {
     }
   },
 
-  async getAllFamilias(): Promise<Familia[]> {
+  async getAllFamilias(): Promise<Family[]> {
     try {
       console.log('Buscando TODAS as famílias...');
       
@@ -178,7 +169,7 @@ export const database = {
           id: doc.id,
           ...data,
         };
-      }) as Familia[];
+      }) as Family[];
 
       // Ordenar no cliente
       const familiasOrdenadas = familias.sort((a, b) => {
@@ -196,11 +187,11 @@ export const database = {
     }
   },
 
-  async getFamiliaById(id: string): Promise<Familia | null> {
+  async getFamiliaById(id: string): Promise<Family | null> {
     const userId = await getCurrentUserId();
     const familiaDoc = await getDoc(doc(db, 'familias', id));
     if (familiaDoc.exists()) {
-      const familia = familiaDoc.data() as Familia;
+      const familia = familiaDoc.data() as Family;
       if (familia.createdBy === userId) {
         return { ...familia, id: familiaDoc.id };
       }
@@ -213,14 +204,14 @@ export const database = {
     const familiaRef = doc(db, 'familias', id);
     const familiaDoc = await getDoc(familiaRef);
     if (!familiaDoc.exists()) throw new Error('Família não encontrada');
-    const familia = familiaDoc.data() as Familia;
+    const familia = familiaDoc.data() as Family;
     if (familia.createdBy !== userId) {
       throw new Error('Sem permissão para remover esta família');
     }
     await deleteDoc(familiaRef);
   },
 
-  onFamiliasChange(callback: (familias: Familia[]) => void) {
+  onFamiliasChange(callback: (familias: Family[]) => void) {
     getCurrentUserId().then(userId => {
       const q = query(
         collection(db, 'familias'),
@@ -231,7 +222,7 @@ export const database = {
         const familias = querySnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data(),
-        })) as Familia[];
+        })) as Family[];
         callback(familias);
       });
     }).catch(() => callback([]));
