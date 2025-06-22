@@ -14,38 +14,106 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/index';
-import { database } from '../services/database';
+import { database, Familia } from '../services/database';
+import { useAuth } from '../context/AuthContext';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 
 interface Props {
   navigation: HomeScreenNavigationProp;
-};
+}
+
+interface RecentUpdate {
+  id: string;
+  familyName: string;
+  description: string;
+  createdAt: any;
+  type: 'cadastro' | 'atualizacao';
+}
 
 export default function HomeScreen({ navigation }: Props) {
-  const [recentUpdates, setRecentUpdates] = useState<any[]>([]);
+  const [recentUpdates, setRecentUpdates] = useState<RecentUpdate[]>([]);
   const [totalFamilias, setTotalFamilias] = useState<number>(0);
+  const [necessidadesUrgentes, setNecessidadesUrgentes] = useState<number>(0);
+  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
+    if (!user) return;
+
     const fetchData = async () => {
       try {
-        // Buscar famílias
-        const familias = await database.getFamilias();
-        setTotalFamilias(familias.length);
-        // Buscar atualizações recentes (simulação, crie o método no database.ts)
-        if (database.getUpdates) {
-          const updates = await database.getUpdates();
-          setRecentUpdates(updates);
-        } else {
-          setRecentUpdates([]); // Se não houver método, lista vazia
+        setLoading(true);
+        
+        // Buscar famílias com fallback
+        let familias = [];
+        try {
+          familias = await database.getFamilias();
+        } catch (error) {
+          console.log('Tentando buscar todas as famílias como fallback...');
+          familias = await database.getAllFamilias();
         }
+        setTotalFamilias(familias.length);
+        
+        // Criar atualizações recentes baseadas nas famílias mais recentes
+        const recentFamilies = familias
+          .sort((a, b) => {
+            const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
+            const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || 0);
+            return dateB.getTime() - dateA.getTime();
+          })
+          .slice(0, 3)
+          .map((familia): RecentUpdate => ({
+            id: familia.id,
+            familyName: familia.nome,
+            description: `Nova família cadastrada`,
+            createdAt: familia.createdAt,
+            type: 'cadastro'
+          }));
+
+        setRecentUpdates(recentFamilies);
+        
+        // Simular necessidades urgentes 
+        // Gerar coleção de necessidades no Firebase e implementar a logica de busca aqui
+        setNecessidadesUrgentes(Math.floor(Math.random() * 10)); // Temporário
+        
       } catch (error) {
+        console.error('Erro ao buscar dados:', error);
         setTotalFamilias(0);
         setRecentUpdates([]);
+        setNecessidadesUrgentes(0);
+      } finally {
+        setLoading(false);
       }
     };
+
     fetchData();
-  }, []);
+  }, [user]);
+
+  const formatDate = (timestamp: any): string => {
+    if (!timestamp) return 'Data não disponível';
+    
+    try {
+      let date: Date;
+      if (timestamp.toDate) {
+        date = timestamp.toDate();
+      } else if (timestamp instanceof Date) {
+        date = timestamp;
+      } else {
+        date = new Date(timestamp);
+      }
+      
+      return date.toLocaleString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (error) {
+      return 'Data inválida';
+    }
+  };
 
   return (
     <Container>
@@ -57,11 +125,11 @@ export default function HomeScreen({ navigation }: Props) {
           <CardBody>
             <CardInfo>
               <Ionicons name="people" size={20} color="#F87060" /> 
-              Famílias cadastradas: {totalFamilias}
+              Famílias cadastradas: {loading ? '...' : totalFamilias}
             </CardInfo>
             <CardInfo>
               <Ionicons name="alert-circle" size={20} color="#F87060" /> 
-              Necessidades urgentes: 5
+              Necessidades urgentes: {loading ? '...' : necessidadesUrgentes}
             </CardInfo>
           </CardBody>
         </CardContainer>
@@ -80,25 +148,32 @@ export default function HomeScreen({ navigation }: Props) {
         />
 
         <SectionTitle>Atualizações Recentes</SectionTitle>
-        {recentUpdates.length === 0 && (
+        {loading ? (
           <CardContainer>
             <CardBody>
-              <CardInfo>Nenhuma atualização recente.</CardInfo>
+              <CardInfo>Carregando atualizações...</CardInfo>
             </CardBody>
           </CardContainer>
-        )}
-        {recentUpdates.map(update => (
-          <CardContainer key={update.id}>
-            <CardTitle>{update.familyName}</CardTitle>
+        ) : recentUpdates.length === 0 ? (
+          <CardContainer>
             <CardBody>
-              <CardInfo>{update.description}</CardInfo>
-              <CardInfo>
-                {update.createdAt && new Date(update.createdAt).toLocaleString('pt-BR')}
-              </CardInfo>
+              <CardInfo>Nenhuma atualização recente. Cadastre sua primeira família!</CardInfo>
             </CardBody>
           </CardContainer>
-        ))}
+        ) : (
+          recentUpdates.map(update => (
+            <CardContainer key={update.id}>
+              <CardTitle>{update.familyName}</CardTitle>
+              <CardBody>
+                <CardInfo>{update.description}</CardInfo>
+                <CardInfo>
+                  <Ionicons name="time" size={16} color="#666" /> {formatDate(update.createdAt)}
+                </CardInfo>
+              </CardBody>
+            </CardContainer>
+          ))
+        )}
       </ScrollView>
     </Container>
   );
-};
+}

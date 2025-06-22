@@ -130,17 +130,70 @@ export const database = {
   },
 
   async getFamilias(): Promise<Familia[]> {
-    const userId = await getCurrentUserId();
-    const q = query(
-      collection(db, 'familias'),
-      where('createdBy', '==', userId),
-      orderBy('createdAt', 'desc')
-    );
-    const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as Familia[];
+    try {
+      const userId = await getCurrentUserId();
+      console.log('Buscando famílias para usuário:', userId);
+      
+      // Query simples apenas com where, sem orderBy
+      const q = query(
+        collection(db, 'familias'),
+        where('createdBy', '==', userId)
+      );
+      
+      const querySnapshot = await getDocs(q);
+      console.log('Documentos encontrados:', querySnapshot.size);
+      
+      const familias = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Familia[];
+
+      // Ordenar no cliente após buscar os dados
+      const familiasOrdenadas = familias.sort((a, b) => {
+        const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
+        const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || 0);
+        return dateB.getTime() - dateA.getTime();
+      });
+
+      console.log('Famílias encontradas:', familiasOrdenadas.length);
+      return familiasOrdenadas;
+      
+    } catch (error) {
+      console.error('Erro detalhado ao buscar famílias:', error);
+      throw error;
+    }
+  },
+
+  async getAllFamilias(): Promise<Familia[]> {
+    try {
+      console.log('Buscando TODAS as famílias...');
+      
+      const querySnapshot = await getDocs(collection(db, 'familias'));
+      console.log('Total de documentos na coleção:', querySnapshot.size);
+      
+      const familias = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        console.log('Família encontrada:', data.nome, 'ID:', doc.id);
+        return {
+          id: doc.id,
+          ...data,
+        };
+      }) as Familia[];
+
+      // Ordenar no cliente
+      const familiasOrdenadas = familias.sort((a, b) => {
+        const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
+        const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || 0);
+        return dateB.getTime() - dateA.getTime();
+      });
+
+      console.log('Total de famílias retornadas:', familiasOrdenadas.length);
+      return familiasOrdenadas;
+      
+    } catch (error) {
+      console.error('Erro ao buscar todas as famílias:', error);
+      throw error;
+    }
   },
 
   async getFamiliaById(id: string): Promise<Familia | null> {
