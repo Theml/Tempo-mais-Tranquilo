@@ -21,6 +21,7 @@ export default function CadastroFamiliaScreen({ navigation }:CadastroFamiliaScre
     vulnerabilidades: '',
     necessidades: '',
     membros: '',
+    responsavel:'',
   });
 
   const handleChange = (name: keyof typeof form, value: string) => {
@@ -32,7 +33,17 @@ export default function CadastroFamiliaScreen({ navigation }:CadastroFamiliaScre
       return;
     }
     await database.addFamilia({
-      ...form
+      nome: form.nome,
+      endereco: form.endereco,
+      telefone: form.telefone,
+      vulnerabilidades: form.vulnerabilidades,
+      necessidades: form.necessidades,
+      responsavel: form.responsavel,
+      membros: Array.from({ length: parseInt(form.membros) || 0 }, (_, i) => ({
+        nome: `Membro ${i + 1}`,
+        idade: '',
+        parentesco: ''
+      }))
     });
     Alert.alert('Sucesso', 'Família cadastrada com sucesso!');
     navigation.goBack();
@@ -89,6 +100,13 @@ export default function CadastroFamiliaScreen({ navigation }:CadastroFamiliaScre
             onChangeText={(text) => handleChange('necessidades', text)}
             icon="help-circle"
             multiline
+          />
+
+          <FormInput 
+            label="Responsável" 
+            value={form.responsavel} 
+            onChangeText={text => handleChange('responsavel', text)} 
+            icon="person" 
           />
           
           <FormInput

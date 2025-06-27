@@ -84,11 +84,11 @@ export default function EditFamiliaPerfilScreen({ navigation, route }: Props) {
 
   const handleMembroChange = (index: number, field: keyof Membro, value: string) => {
     setForm(prev => {
-      const members = [...prev.membros];
-      if (members[index]) {
-        members[index] = { ...members[index], [field]: value };
+      const membros = [...prev.membros];
+      if (membros[index]) {
+        membros[index] = { ...membros[index], [field]: value };
       }
-      return { ...prev, members };
+      return { ...prev, membros };
     });
   };
 
