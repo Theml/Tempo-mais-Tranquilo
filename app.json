@@ -31,6 +31,9 @@
         "projectId": "df34bf59-92be-4286-b31c-73a7df3d0326"
       }
     },
-    "owner": "theml"
+    "owner": "theml",
+    "plugins": [
+      "expo-font"
+    ]
   }
 }
