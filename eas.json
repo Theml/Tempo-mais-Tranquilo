@@ -11,10 +11,12 @@
       },
       "ios": {
         "simulator": true
-      }
+      },
+      "channel": "development"
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "channel": "preview"
     },
     "production": {
       "android": {
@@ -22,7 +24,8 @@
       },
       "ios": {
         "enterpriseProvisioning": "universal"
-      }
+      },
+      "channel": "production"
     }
   },
   "submit": {

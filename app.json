@@ -26,6 +26,9 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "updates":{
+      "checkAutomatically":"ON_LOAD"
+    },
     "extra": {
       "eas": {
         "projectId": "df34bf59-92be-4286-b31c-73a7df3d0326"
